@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import MoviesList from './components/MoviesList';
 import './App.css';
 
@@ -6,6 +6,7 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [shouldRetry, setShouldRetry] = useState(true);
 
   async function fetchApiHandler() {
     setIsLoading(true);
@@ -28,24 +29,34 @@ function App() {
         };
       });
       setMovies(transformedMovies);
+      setShouldRetry(false);
     } catch (error) {
       setError(error.message);
     }
     setIsLoading(false);
   }
 
-  if (error) {
-    setTimeout(() => {
-      console.log('Fetching api');
-      fetchApiHandler();
-    }, 5000);
-  }
+  useEffect(() => {
+    let retryTimer;
+    if (error && shouldRetry) {
+      retryTimer = setTimeout(() => {
+        console.log('Fetching api');
+        fetchApiHandler();
+      }, 5000);
+    }
+    return () => clearTimeout(retryTimer);
+  }, [error, shouldRetry]);
 
   return (
     <React.Fragment>
       <section>
         <button onClick={fetchApiHandler}>Fetch Movies</button>
-        <button onClick={() => setError(null)}>Stop Retrying</button>
+        <button
+          onClick={() => setShouldRetry(false)}
+          style={{ marginLeft: '10px' }}
+        >
+          Stop Retrying
+        </button>
       </section>
       <section>
         {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
