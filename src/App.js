@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import MoviesList from './components/MoviesList';
 import './App.css';
 
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   async function fetchApiHandler() {
     setIsLoading(true);
+    setError(null);
+
     try {
-      const response = await fetch('https://swapi.py4e.com/api/films');
+      const response = await fetch('https://swapi.py4e.com/api/film');
+
+      if (!response.ok) {
+        throw new Error('Something went wrong ....Retrying');
+      }
+
       const data = await response.json();
       const transformedMovies = data.results.map((movie) => {
         return {
@@ -20,23 +28,32 @@ function App() {
         };
       });
       setMovies(transformedMovies);
-      setIsLoading(false);
-    } catch {
-      alert('Error in fetching the details');
+    } catch (error) {
+      setError(error.message);
     }
+    setIsLoading(false);
+  }
+
+  if (error) {
+    setTimeout(() => {
+      console.log('Fetching api');
+      fetchApiHandler();
+    }, 5000);
   }
 
   return (
     <React.Fragment>
       <section>
         <button onClick={fetchApiHandler}>Fetch Movies</button>
+        <button onClick={() => setError(null)}>Stop Retrying</button>
       </section>
       <section>
         {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
-        {!isLoading && movies.length === 0 && (
+        {!isLoading && movies.length === 0 && !error && (
           <p>There are no movies to display</p>
         )}
-        {isLoading && <p>Loading...</p>}
+        {isLoading && !error && <p>Loading...</p>}
+        {!isLoading && error && <p>{error}</p>}
       </section>
     </React.Fragment>
   );
