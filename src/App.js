@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import MoviesList from './components/MoviesList';
+import Form from './components/Form';
 import './App.css';
 
 function App() {
@@ -49,10 +50,11 @@ function App() {
       }, 5000);
     }
     return () => clearTimeout(retryTimer);
-  }, [error, shouldRetry]);
+  }, [error, shouldRetry, fetchApiHandler]);
 
   return (
     <React.Fragment>
+      <Form />
       <section>
         <button onClick={fetchApiHandler}>Fetch Movies</button>
         <button
