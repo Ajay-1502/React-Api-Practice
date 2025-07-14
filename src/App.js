@@ -14,7 +14,9 @@ function App() {
     setError(null);
 
     try {
-      const response = await fetch('https://swapi.py4e.com/api/films');
+      const response = await fetch(
+        'https://react-movie-b7b2e-default-rtdb.firebaseio.com/movies.json'
+      );
 
       if (!response.ok) {
         throw new Error('Something went wrong ....Retrying');
@@ -22,17 +24,19 @@ function App() {
 
       const data = await response.json();
 
-      const transformedMovies = data.results.map((movie) => {
-        return {
-          id: movie.episode_id,
-          title: movie.title,
-          releaseDate: movie.release_date,
-          openingText: movie.opening_crawl,
-        };
-      });
-      setMovies(transformedMovies);
+      let moviesReceived = [];
+
+      for (let key in data) {
+        moviesReceived.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate,
+        });
+      }
+
+      setMovies(moviesReceived);
       setShouldRetry(false);
-      console.log(transformedMovies);
     } catch (error) {
       setError(error.message);
     }

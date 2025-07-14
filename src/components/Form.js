@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './Form.css';
 
 const Form = () => {
-  const [movies, setMovies] = useState([]);
   const [title, setTitle] = useState('');
   const [openingText, setOpeningText] = useState('');
   const [releaseDate, setReleaseDate] = useState('');
 
-  const SubmitHandler = (event) => {
+  const SubmitHandler = async (event) => {
     event.preventDefault();
 
     const movieObject = {
@@ -15,16 +14,28 @@ const Form = () => {
       openingText: openingText,
       releaseDate: releaseDate,
     };
-    setMovies((prev) => [...prev, { ...movieObject }]);
 
-    setTitle('');
-    setOpeningText('');
-    setReleaseDate('');
+    try {
+      const response = await fetch(
+        'https://react-movie-b7b2e-default-rtdb.firebaseio.com/movies.json',
+        {
+          method: 'POST',
+          body: JSON.stringify(movieObject),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const data = await response.json();
+      console.log(data);
+
+      setTitle('');
+      setOpeningText('');
+      setReleaseDate('');
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  useEffect(() => {
-    console.log(movies);
-  }, [movies]);
 
   return (
     <>
