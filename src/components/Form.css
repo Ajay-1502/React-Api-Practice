@@ -1,0 +1,58 @@
+section {
+  margin: 2rem auto;
+  width: 90%;
+  max-width: 40rem;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+input,
+textarea {
+  width: 100%;
+  font: inherit;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #460897;
+  outline: none;
+  background-color: #fff;
+}
+
+#button {
+  font: inherit;
+  cursor: pointer;
+  background: #230052;
+  border: 1px solid #230052;
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 20px;
+  align-self: center;
+}
+
+#button:hover,
+#button:active {
+  background-color: #460897;
+  border-color: #460897;
+}
